@@ -1,38 +1,41 @@
 const express = require("express");
-
+const cors = require("cors");
 require("dotenv").config();
 
 if (!process.env.JWT_SECRET) {
-  console.error("Missing JWT_SECRET in .env. Add JWT_SECRET=your_secret to the project root .env file.");
+  console.error("Missing JWT_SECRET in .env");
   process.exit(1);
 }
 
 const app = express();
 
-// middleware
-const cors = require("cors");
-
+// ✅ CORS (FINAL FIX)
 app.use(cors({
   origin: "https://expense-tracker-mern-nu.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
+app.options("*", cors()); // handle preflight
+
+// middleware
 app.use(express.json());
 
+// test route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-const expenseRoutes = require("./routes/expenseRoutes");
-
-app.use("/api/expenses", expenseRoutes);
-
+// routes
 const connectDB = require("./config/db");
-
 connectDB();
 
+const expenseRoutes = require("./routes/expenseRoutes");
 const authRoutes = require("./routes/authRoutes");
 
-app.use("/api/auth", authRoutes);
+// ✅ IMPORTANT: REMOVE /api IF FRONTEND DOESN’T USE IT
+app.use("/expenses", expenseRoutes);
+app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT || 3000;
 
