@@ -17,6 +17,9 @@ app.use(cors({
   credentials: true
 }));
 
+// Handle preflight in Express 5
+app.options("/:path(*)", cors());
+
 // middleware
 app.use(express.json());
 
