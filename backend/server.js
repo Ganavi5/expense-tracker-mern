@@ -16,8 +16,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.options("*", cors()); // handle preflight
-
 // middleware
 app.use(express.json());
 
@@ -33,9 +31,9 @@ connectDB();
 const expenseRoutes = require("./routes/expenseRoutes");
 const authRoutes = require("./routes/authRoutes");
 
-// ✅ IMPORTANT: REMOVE /api IF FRONTEND DOESN’T USE IT
-app.use("/expenses", expenseRoutes);
-app.use("/auth", authRoutes);
+// ✅ IMPORTANT: KEEP /api FOR FRONTEND COMPATIBILITY
+app.use("/api/expenses", expenseRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 3000;
 
