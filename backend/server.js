@@ -16,6 +16,14 @@ app.use(cors({
   credentials: true
 }));
 
+// Handle preflight for all routes
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://expense-tracker-mern-nu.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.sendStatus(200);
+});
+
 // middleware
 app.use(express.json());
 
@@ -31,9 +39,9 @@ connectDB();
 const expenseRoutes = require("./routes/expenseRoutes");
 const authRoutes = require("./routes/authRoutes");
 
-// ✅ IMPORTANT: KEEP /api FOR FRONTEND COMPATIBILITY
-app.use("/api/expenses", expenseRoutes);
-app.use("/api/auth", authRoutes);
+// ✅ IMPORTANT: REMOVE /api TO MATCH FRONTEND CALLS
+app.use("/expenses", expenseRoutes);
+app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT || 3000;
 
